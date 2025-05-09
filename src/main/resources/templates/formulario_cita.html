@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Cita</title>
+</head>
+<body>
+<h1>Registrar Nueva Cita</h1>
+
+<!-- Mostrar mensaje de error si existe -->
+<div th:if="${mensajeError}" style="color: red;">
+    <p th:text="${mensajeError}"></p>
+</div>
+
+<form th:action="@{/citas}" th:object="${cita}" method="post">
+    <label for="consultorio">Consultorio:</label>
+    <select id="consultorio" th:field="*{consultorio}" required>
+        <option value="">--Selecciona un consultorio--</option>
+        <option th:each="c : ${consultorios}"
+                th:value="${c.id}"
+                th:text="${'Consultorio ' + c.numero + ' - Piso ' + c.piso}"></option>
+    </select>
+    <br/>
+
+    <label for="doctor">Doctor:</label>
+    <select id="doctor" th:field="*{doctor}" required>
+        <option value="">--Selecciona un doctor--</option>
+        <option th:each="d : ${doctores}"
+                th:value="${d.id}"
+                th:text="${d.nombre + ' ' + d.apellidoPaterno + ' (' + d.especialidad + ')'}"></option>
+    </select>
+    <br/>
+
+    <label for="horario">Horario de consulta:</label>
+    <input type="datetime-local" id="horario" th:field="*{horario}" required />
+    <br/>
+
+    <label for="paciente">Nombre del paciente:</label>
+    <input type="text" id="paciente" th:field="*{paciente}" required />
+    <br/>
+
+    <button type="submit">Guardar Cita</button>
+</form>
+</body>
+</html>

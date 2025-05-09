@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar Citas</title>
+</head>
+<body>
+<h1>Consultar Citas</h1>
+
+<!-- Mensaje de error -->
+<div th:if="${mensajeError}" style="color: red;">
+    <p th:text="${mensajeError}"></p>
+</div>
+
+<!-- Mensaje de éxito -->
+<div th:if="${mensajeExito}" style="color: green;">
+    <p th:text="${mensajeExito}"></p>
+</div>
+
+<form th:action="@{/citas/buscar}" method="get">
+    <label for="fecha">Fecha:</label>
+    <input type="date" name="fecha" id="fecha" th:value="${param.fecha}" />
+    <br/>
+
+    <label for="doctor">Doctor:</label>
+    <input type="text" name="doctor" id="doctor" th:value="${param.doctor}" />
+    <br/>
+
+    <label for="consultorio">Consultorio:</label>
+    <input type="text" name="consultorio" id="consultorio" th:value="${param.consultorio}" />
+    <br/>
+
+    <button type="submit">Buscar</button>
+</form>
+
+<hr/>
+
+<table border="1" th:if="${citas != null and !citas.isEmpty()}">
+    <thead>
+    <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Doctor</th>
+        <th>Consultorio</th>
+        <th>Paciente</th>
+        <th>Acción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="cita : ${citas}">
+        <td th:text="${#temporals.format(cita.horario, 'yyyy-MM-dd')}">Fecha</td>
+        <td th:text="${#temporals.format(cita.horario, 'HH:mm')}">Hora</td>
+        <td th:text="${cita.doctor.nombre + ' ' + cita.doctor.apellidoPaterno}">Doctor</td>
+        <td th:text="${'Consultorio ' + cita.consultorio.numero}">Consultorio</td>
+        <td th:text="${cita.paciente}">Paciente</td>
+        <td>
+            <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post">
+                <button type="submit">Cancelar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Si no hay citas -->
+<div th:if="${citas != null and citas.isEmpty()}">
+    <p>No se encontraron citas con los filtros proporcionados.</p>
+</div>
+
+</body>
+</html>
