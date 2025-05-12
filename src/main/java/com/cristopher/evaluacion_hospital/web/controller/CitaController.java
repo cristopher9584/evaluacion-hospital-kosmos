@@ -19,6 +19,7 @@ import java.util.List;
  * Permite a los clientes realizar operaciones como crear, buscar o listar citas.
  */
 @Controller
+@RequestMapping("/citas")
 @AllArgsConstructor
 public class CitaController {
 
@@ -29,6 +30,11 @@ public class CitaController {
     public String mostrarFormulario(Model model) {
         model.addAttribute("cita", new Cita());
         return "formulario_cita";
+    }
+
+    @GetMapping("/consulta")
+    public String mostrarConsultaCitas() {
+        return "consulta_citas";
     }
 
     @PostMapping
@@ -61,7 +67,7 @@ public class CitaController {
     }
 
 
-    @PostMapping("/citas/{id}/eliminar")
+    @PostMapping("/{id}/eliminar")
     public String cancelarCita(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             citaService.eliminar(id);

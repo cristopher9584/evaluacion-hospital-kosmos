@@ -3,68 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <title>Consultar Citas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f5f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-button {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 40px 0 40px;
+        }
+
+        .top-button a button {
+            background-color: #343a40;
+            color: white;
+            padding: 14px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .top-button a button:hover {
+            background-color: #23272b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto 60px auto;
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .error-message {
+            color: #d9534f;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #28a745;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button[type="submit"] {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .cancel-button {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cancel-button:hover {
+            background-color: #bd2130;
+        }
+    </style>
 </head>
 <body>
-<h1>Consultar Citas</h1>
 
-<!-- Mensaje de error -->
-<div th:if="${mensajeError}" style="color: red;">
-    <p th:text="${mensajeError}"></p>
+<!-- Botón superior para redirigir -->
+<div class="top-button">
+    <a th:href="@{/citas/nueva}">
+        <button type="button">Registrar Nueva Cita</button>
+    </a>
 </div>
 
-<!-- Mensaje de éxito -->
-<div th:if="${mensajeExito}" style="color: green;">
-    <p th:text="${mensajeExito}"></p>
-</div>
+<div class="container">
+    <h1>Consultar Citas</h1>
 
-<form th:action="@{/citas/buscar}" method="get">
-    <label for="fecha">Fecha:</label>
-    <input type="date" name="fecha" id="fecha" th:value="${param.fecha}" />
-    <br/>
+    <!-- Mensaje de error -->
+    <div th:if="${mensajeError}" class="error-message">
+        <p th:text="${mensajeError}"></p>
+    </div>
 
-    <label for="doctor">Doctor:</label>
-    <input type="text" name="doctor" id="doctor" th:value="${param.doctor}" />
-    <br/>
+    <!-- Mensaje de éxito -->
+    <div th:if="${mensajeExito}" class="success-message">
+        <p th:text="${mensajeExito}"></p>
+    </div>
 
-    <label for="consultorio">Consultorio:</label>
-    <input type="text" name="consultorio" id="consultorio" th:value="${param.consultorio}" />
-    <br/>
+    <form th:action="@{/citas/buscar}" method="get">
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha" id="fecha" th:value="${param.fecha}" />
+        </div>
 
-    <button type="submit">Buscar</button>
-</form>
+        <div class="form-group">
+            <label for="doctor">Doctor:</label>
+            <input type="text" name="doctor" id="doctor" th:value="${param.doctor}" />
+        </div>
 
-<hr/>
+        <div class="form-group">
+            <label for="consultorio">Consultorio:</label>
+            <input type="text" name="consultorio" id="consultorio" th:value="${param.consultorio}" />
+        </div>
 
-<table border="1" th:if="${citas != null and !citas.isEmpty()}">
-    <thead>
-    <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Doctor</th>
-        <th>Consultorio</th>
-        <th>Paciente</th>
-        <th>Acción</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="cita : ${citas}">
-        <td th:text="${#temporals.format(cita.horario, 'yyyy-MM-dd')}">Fecha</td>
-        <td th:text="${#temporals.format(cita.horario, 'HH:mm')}">Hora</td>
-        <td th:text="${cita.doctor.nombre + ' ' + cita.doctor.apellidoPaterno}">Doctor</td>
-        <td th:text="${'Consultorio ' + cita.consultorio.numero}">Consultorio</td>
-        <td th:text="${cita.paciente}">Paciente</td>
-        <td>
-            <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post">
-                <button type="submit">Cancelar</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        <button type="submit">Buscar</button>
+    </form>
 
-<!-- Si no hay citas -->
-<div th:if="${citas != null and citas.isEmpty()}">
-    <p>No se encontraron citas con los filtros proporcionados.</p>
+    <table th:if="${citas != null and !citas.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Doctor</th>
+            <th>Consultorio</th>
+            <th>Paciente</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cita : ${citas}">
+            <td th:text="${#temporals.format(cita.fecha, 'yyyy-MM-dd')}">Fecha</td>
+            <td th:text="${#temporals.format(cita.fecha, 'HH:mm')}">Hora</td>
+            <td th:text="${cita.doctor.nombre + ' ' + cita.doctor.apellidoPaterno}">Doctor</td>
+            <td th:text="${'Consultorio ' + cita.consultorio.numero}">Consultorio</td>
+            <td th:text="${cita.paciente}">Paciente</td>
+            <td>
+                <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post">
+                    <button type="submit" class="cancel-button">Cancelar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${citas != null and citas.isEmpty()}">
+        <p style="margin-top: 20px;">No se encontraron citas con los filtros proporcionados.</p>
+    </div>
 </div>
 
 </body>
