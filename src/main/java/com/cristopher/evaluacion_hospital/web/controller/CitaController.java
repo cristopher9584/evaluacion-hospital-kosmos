@@ -49,8 +49,8 @@ public class CitaController {
     @PostMapping
     public String guardarCita(@ModelAttribute("cita") Cita cita, Model model) {
         try {
-            citaService.guardar(cita);
-            return "redirect:/citas/nueva";
+            citaService.guardar(cita); // Guarda o actualiza la cita según el caso
+            return "redirect:/citas/consulta";  // Redirige siempre al listado, no importa si es nueva o actualizada
         } catch (IllegalArgumentException e) {
             model.addAttribute("mensajeError", e.getMessage());
             model.addAttribute("cita", cita);
@@ -88,7 +88,7 @@ public class CitaController {
         return "redirect:/citas/buscar";
     }
 
-    @GetMapping("/{id}/editar")
+    /*@GetMapping("/{id}/editar")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
         Cita cita = citaService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID de cita no válido: " + id));
@@ -98,7 +98,7 @@ public class CitaController {
         model.addAttribute("consultorios", consultorioService.obtenerTodos());
 
         return "formulario_cita";
-    }
+    }*/
 
 
 }

@@ -105,7 +105,7 @@
     </div>
 
     <!-- El action depende de si es nueva o modificación -->
-    <form th:action="${cita.id != null} ? @{'/citas/' + ${cita.id} + '/actualizar'} : @{/citas}" th:object="${cita}" method="post">
+    <form th:action="@{/citas}" th:object="${cita}" method="post">
         <div class="form-group">
             <label for="consultorio">Consultorio:</label>
             <select id="consultorio" th:field="*{consultorio}" required>
