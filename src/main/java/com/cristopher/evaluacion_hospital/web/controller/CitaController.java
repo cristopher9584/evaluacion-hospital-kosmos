@@ -88,7 +88,7 @@ public class CitaController {
         return "redirect:/citas/buscar";
     }
 
-    /*@GetMapping("/{id}/editar")
+    @GetMapping("/{id}/editar")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
         Cita cita = citaService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID de cita no válido: " + id));
@@ -96,9 +96,8 @@ public class CitaController {
         model.addAttribute("cita", cita);
         model.addAttribute("doctores", doctorService.obtenerTodos());
         model.addAttribute("consultorios", consultorioService.obtenerTodos());
-
         return "formulario_cita";
-    }*/
+    }
 
 
 }
