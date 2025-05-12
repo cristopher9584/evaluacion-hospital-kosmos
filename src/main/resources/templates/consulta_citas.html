@@ -220,9 +220,9 @@
                     <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post" style="display: inline;">
                         <button type="submit" class="action-button cancel-button">Cancelar</button>
                     </form>
-                    <form th:action="@{/citas/nueva}" method="get" style="display: inline;">
-                        <button type="submit" class="action-button modify-button">Modificar</button>
-                    </form>
+                    <a th:href="@{'/citas/' + ${cita.id} + '/editar'}" style="text-decoration: none;">
+                        <button type="button" class="action-button modify-button">Modificar</button>
+                    </a>
                 </div>
             </td>
         </tr>

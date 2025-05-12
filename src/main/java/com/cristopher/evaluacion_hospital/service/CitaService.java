@@ -150,5 +150,15 @@ public class CitaService {
         }
     }
 
+    public Optional<Cita> buscarPorId(Long id) {
+        Optional<Cita> citaOpt = repository.findById(id);
+
+        if (citaOpt.isEmpty()) {
+            throw new IllegalArgumentException("La cita no existe.");
+        }
+
+        return citaOpt;
+    }
+
 
 }

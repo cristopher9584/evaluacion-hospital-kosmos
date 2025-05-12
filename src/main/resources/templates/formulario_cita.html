@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nueva Cita</title>
+    <title th:text="${cita.id != null} ? 'Modificar Cita' : 'Nueva Cita'">Nueva Cita</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -97,21 +97,23 @@
 </div>
 
 <div class="container">
-    <h1>Registrar Nueva Cita</h1>
+    <h1 th:text="${cita.id != null} ? 'Modificar Cita' : 'Registrar Nueva Cita'">Registrar Nueva Cita</h1>
 
     <!-- Mostrar mensaje de error si existe -->
     <div th:if="${mensajeError}" class="error-message">
         <p th:text="${mensajeError}"></p>
     </div>
 
-    <form th:action="@{/citas}" th:object="${cita}" method="post">
+    <!-- El action depende de si es nueva o modificación -->
+    <form th:action="${cita.id != null} ? @{'/citas/' + ${cita.id} + '/actualizar'} : @{/citas}" th:object="${cita}" method="post">
         <div class="form-group">
             <label for="consultorio">Consultorio:</label>
             <select id="consultorio" th:field="*{consultorio}" required>
                 <option value="">--Selecciona un consultorio--</option>
                 <option th:each="c : ${consultorios}"
                         th:value="${c.id}"
-                        th:text="${'Consultorio ' + c.numero + ' - Piso ' + c.piso}"></option>
+                        th:text="${'Consultorio ' + c.numero + ' - Piso ' + c.piso}">
+                </option>
             </select>
         </div>
 
@@ -121,7 +123,8 @@
                 <option value="">--Selecciona un doctor--</option>
                 <option th:each="d : ${doctores}"
                         th:value="${d.id}"
-                        th:text="${d.nombre + ' ' + d.apellidoPaterno + ' (' + d.especialidad + ')'}"></option>
+                        th:text="${d.nombre + ' ' + d.apellidoPaterno + ' (' + d.especialidad + ')'}">
+                </option>
             </select>
         </div>
 
@@ -135,7 +138,7 @@
             <input type="text" id="paciente" th:field="*{paciente}" required />
         </div>
 
-        <button type="submit">Guardar Cita</button>
+        <button type="submit" th:text="${cita.id != null} ? 'Actualizar Cita' : 'Guardar Cita'">Guardar Cita</button>
     </form>
 </div>
 
