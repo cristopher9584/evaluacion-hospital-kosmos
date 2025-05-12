@@ -21,12 +21,12 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
                                 @Param("doctor") String doctor,
                                 @Param("consultorio") String consultorio);
 
-    boolean existsByConsultorioIdAndHorarioConsulta(Long consultorioId, LocalDateTime horarioConsulta);
+    boolean existsByConsultorioIdAndFecha(Long consultorioId, LocalDateTime fecha);
 
-    boolean existsByDoctorIdAndHorarioConsulta(Long doctorId, LocalDateTime horarioConsulta);
+    boolean existsByDoctorIdAndFecha(Long doctorId, LocalDateTime fecha);
 
-    long countByDoctorIdAndFechaConsulta(Long doctorId, LocalDateTime fechaConsulta);
+    long countByDoctorIdAndFecha(Long doctorId, LocalDateTime fechaConsulta);
 
-    List<Cita> findByPacienteAndFechaConsulta(String paciente, LocalDateTime fechaConsulta);
+    List<Cita> findByPacienteAndFecha(String paciente, LocalDateTime fecha);
 
 }

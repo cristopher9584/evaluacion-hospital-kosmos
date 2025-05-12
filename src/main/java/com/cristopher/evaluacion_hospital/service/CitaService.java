@@ -1,6 +1,5 @@
 package com.cristopher.evaluacion_hospital.service;
 
-
 import com.cristopher.evaluacion_hospital.entity.Cita;
 import com.cristopher.evaluacion_hospital.entity.Consultorio;
 import com.cristopher.evaluacion_hospital.repository.CitaRepository;
@@ -44,53 +43,53 @@ public class CitaService {
     public Cita guardar(Cita cita) {
 
         //No se puede agendar cita en un mismo consultorio a la misma hora
-        boolean consultorioOcupado = repository.existsByConsultorioIdAndHorarioConsulta(
+        boolean consultorioOcupado = repository.existsByConsultorioIdAndFecha(
                 cita.getConsultorio().getId(),
-                cita.getHorario()
+                cita.getFecha()
         );
         if (consultorioOcupado) {
             throw new IllegalArgumentException("Ya hay una cita en ese consultorio a esa hora.");
         }
 
         //No se puede agendar cita para un mismo Dr. a la misma hora
-        boolean doctorOcupado = repository.existsByDoctorIdAndHorarioConsulta(
+        boolean doctorOcupado = repository.existsByDoctorIdAndFecha(
                 cita.getDoctor().getId(),
-                cita.getHorario()
+                cita.getFecha()
         );
         if (doctorOcupado) {
             throw new IllegalArgumentException("El doctor ya tiene una cita a esa hora.");
         }
 
 
-        /*No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas
+        /* No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas
         de diferencia para el mismo día.*/
         // Obtener las citas previas del paciente para el mismo día
-        List<Cita> citasPrevias = repository.findByPacienteAndFechaConsulta(
+        List<Cita> citasPrevias = repository.findByPacienteAndFecha(
                 cita.getPaciente(),
-                cita.getHorario()
+                cita.getFecha()
         );
 
         // Verificar si la nueva cita se solapa o está demasiado cerca de las existentes
         for (Cita citaExistente : citasPrevias) {
-            LocalDateTime inicioExistente = citaExistente.getHorario();
+            LocalDateTime inicioExistente = citaExistente.getFecha();
             LocalDateTime finExistente = inicioExistente.plusHours(1); // Las citas duran 1 hora
 
             // Verificar si la nueva cita se solapa con una existente
-            if (cita.getHorario().isBefore(finExistente) && cita.getHorario().plusHours(1).isAfter(inicioExistente)) {
+            if (cita.getFecha().isBefore(finExistente) && cita.getFecha().plusHours(1).isAfter(inicioExistente)) {
                 throw new IllegalArgumentException("La nueva cita se solapa con una cita existente del paciente.");
             }
 
             // Verificar que haya al menos 2 horas de diferencia entre la nueva cita y la existente
-            if (cita.getHorario().isBefore(finExistente.plusHours(2))) {
+            if (cita.getFecha().isBefore(finExistente.plusHours(2))) {
                 throw new IllegalArgumentException("La nueva cita debe tener al menos 2 horas de diferencia con una cita existente.");
             }
         }
 
 
         //Un mismo doctor no puede tener más de 8 citas en el día.
-        long citasDelDia = repository.countByDoctorIdAndFechaConsulta(
+        long citasDelDia = repository.countByDoctorIdAndFecha(
                 cita.getDoctor().getId(),
-                cita.getHorario()
+                cita.getFecha()
         );
 
         if (citasDelDia >= 8) {
@@ -126,7 +125,7 @@ public class CitaService {
         LocalDateTime ahora = LocalDateTime.now();
 
         //solo se elimina la cita si su fecha es anterior a la actual.
-        if (cita.get().getHorario().isAfter(ahora)) {
+        if (cita.get().getFecha().isAfter(ahora)) {
             System.out.println("error");
         } else {
             repository.deleteById(id);

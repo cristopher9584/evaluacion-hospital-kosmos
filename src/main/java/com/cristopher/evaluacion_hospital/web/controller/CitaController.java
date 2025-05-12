@@ -43,10 +43,8 @@ public class CitaController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
             @RequestParam(required = false) String doctor,
             @RequestParam(required = false) String consultorio,
-            Model model
-    ) {
+            Model model) {
         try {
-            // Convierte fecha a LocalDateTime solo si se proporciona
             LocalDateTime fechaHora = (fecha != null) ? fecha.atStartOfDay() : null;
 
             List<Cita> citas = citaService.buscarCitas(fechaHora, doctor, consultorio);

@@ -19,7 +19,7 @@ public class ConsultorioController {
     public String verConsultorios(Model model) {
         List<Consultorio> consultorios = consultorioService.obtenerTodos();
         model.addAttribute("consultorios", consultorios);
-        return "consultorios"; // consultorios.html
+        return "consultorios";
     }
 
 }

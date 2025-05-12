@@ -17,7 +17,7 @@ public class Cita {
 
     private String paciente;
 
-    private LocalDateTime horario;
+    private LocalDateTime fecha;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id")

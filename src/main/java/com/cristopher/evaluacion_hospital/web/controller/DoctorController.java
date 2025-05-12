@@ -20,7 +20,7 @@ public class DoctorController {
     public String verDoctores(Model model) {
         List<Doctor> doctores = doctorService.obtenerTodos();
         model.addAttribute("doctores", doctores);
-        return "doctores"; // doctores.html
+        return "doctores";
     }
 
 }
