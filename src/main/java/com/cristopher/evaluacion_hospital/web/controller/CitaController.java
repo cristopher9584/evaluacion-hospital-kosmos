@@ -2,6 +2,8 @@ package com.cristopher.evaluacion_hospital.web.controller;
 
 import com.cristopher.evaluacion_hospital.entity.Cita;
 import com.cristopher.evaluacion_hospital.service.CitaService;
+import com.cristopher.evaluacion_hospital.service.ConsultorioService;
+import com.cristopher.evaluacion_hospital.service.DoctorService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -25,12 +27,19 @@ public class CitaController {
 
     private final CitaService citaService;
 
+    private final DoctorService doctorService;
+
+    private final ConsultorioService consultorioService;
+
 
     @GetMapping("/nueva")
     public String mostrarFormulario(Model model) {
         model.addAttribute("cita", new Cita());
+        model.addAttribute("doctores", doctorService.obtenerTodos());
+        model.addAttribute("consultorios", consultorioService.obtenerTodos());
         return "formulario_cita";
     }
+
 
     @GetMapping("/consulta")
     public String mostrarConsultaCitas() {
