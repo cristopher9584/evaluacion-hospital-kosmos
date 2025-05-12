@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entidad que representa un consultorio médico.
+ *
+ * Contiene información de id, piso y número del consultorio.
+ */
 @Entity
 @Getter
 @Setter
@@ -14,6 +19,7 @@ public class Consultorio {
     private Long id;
 
     private int numero;
+
     private int piso;
 
 }

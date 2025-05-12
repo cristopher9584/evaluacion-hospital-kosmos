@@ -9,6 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Repositorio de acceso a datos para la entidad {@link Cita}.
+ *
+ * Permite realizar operaciones CRUD y consultas personalizadas sobre las citas.
+ */
 public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     @Query("""

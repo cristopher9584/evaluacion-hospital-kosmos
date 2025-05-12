@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Servicio que contiene la lógica de negocio relacionada con las citas médicas.
+ *
+ * Se encarga de gestionar la creación, consulta y filtrado de citas.
+ */
 @Service
 @AllArgsConstructor
 public class CitaService {

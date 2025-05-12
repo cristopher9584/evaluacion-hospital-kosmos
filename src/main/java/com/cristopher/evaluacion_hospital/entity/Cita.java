@@ -6,6 +6,12 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa una cita médica en el sistema.
+ *
+ * Contiene información sobre la fecha de la cita, el doctor que la atiende
+ * y el consultorio asignado.
+ */
 @Entity
 @Getter
 @Setter

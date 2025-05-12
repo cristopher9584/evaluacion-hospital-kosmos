@@ -13,6 +13,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controlador que expone los endpoints relacionados con las citas médicas.
+ *
+ * Permite a los clientes realizar operaciones como crear, buscar o listar citas.
+ */
 @Controller
 @AllArgsConstructor
 public class CitaController {
