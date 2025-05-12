@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,33 +70,29 @@ public class CitaService {
         /* No se puede agendar cita para un paciente a la una misma hora ni con menos de 2 horas
         de diferencia para el mismo día.*/
         // Obtener las citas previas del paciente para el mismo día
-        List<Cita> citasPrevias = repository.findByPacienteAndFecha(
-                cita.getPaciente(),
-                cita.getFecha()
-        );
+        LocalDateTime fechaConsulta = cita.getFecha();
+        LocalDateTime inicioDelDia = fechaConsulta.toLocalDate().atStartOfDay();
+        LocalDateTime finDelDia = fechaConsulta.toLocalDate().atTime(LocalTime.MAX);
 
-        // Verificar si la nueva cita se solapa o está demasiado cerca de las existentes
-        for (Cita citaExistente : citasPrevias) {
+        List<Cita> citasDia = repository.findByPacienteAndFechaBetween(cita.getPaciente(), inicioDelDia, finDelDia);
+
+        for (Cita citaExistente : citasDia) {
             LocalDateTime inicioExistente = citaExistente.getFecha();
-            LocalDateTime finExistente = inicioExistente.plusHours(1); // Las citas duran 1 hora
 
-            // Verificar si la nueva cita se solapa con una existente
-            if (cita.getFecha().isBefore(finExistente) && cita.getFecha().plusHours(1).isAfter(inicioExistente)) {
-                throw new IllegalArgumentException("La nueva cita se solapa con una cita existente del paciente.");
-            }
+            // Rango prohibido: desde 2 horas antes hasta 3 horas después de la nueva cita (3 horas suponiendo una duracion de 1 hora de todas las citas)
+            LocalDateTime nuevaCita = cita.getFecha();
+            LocalDateTime inicioRango = nuevaCita.minusHours(2);
+            LocalDateTime finRango = nuevaCita.plusHours(3);
 
-            // Verificar que haya al menos 2 horas de diferencia entre la nueva cita y la existente
-            if (cita.getFecha().isBefore(finExistente.plusHours(2))) {
-                throw new IllegalArgumentException("La nueva cita debe tener al menos 2 horas de diferencia con una cita existente.");
+            if (!inicioExistente.isBefore(inicioRango) && !inicioExistente.isAfter(finRango)) {
+                throw new IllegalArgumentException("La nueva cita debe estar al menos 2 horas de distancia de otra cita del mismo paciente.");
             }
         }
 
 
         //Un mismo doctor no puede tener más de 8 citas en el día.
-        long citasDelDia = repository.countByDoctorIdAndFecha(
-                cita.getDoctor().getId(),
-                cita.getFecha()
-        );
+        long citasDelDia = repository.countByDoctorIdAndFechaBetween(cita.getDoctor().getId(), inicioDelDia, finDelDia);
+
 
         if (citasDelDia >= 8) {
             throw new IllegalArgumentException("El doctor ya tiene 8 citas agendadas para este día.");
@@ -113,8 +110,19 @@ public class CitaService {
      * @param consultorio El número o identificador del consultorio para filtrar las citas.
      * @return Una lista de citas que coinciden con los filtros proporcionados. Si no hay coincidencias, la lista estará vacía.
      */
-    public List<Cita> buscarCitas(LocalDateTime fecha, String doctor, String consultorio) {
-        return repository.buscarPorFiltros(fecha, doctor, consultorio);
+    public List<Cita> buscarCitas(LocalDate fecha, String doctor, String consultorio) {
+        LocalDateTime inicio = null;
+        LocalDateTime fin = null;
+
+        if (fecha != null) {
+            inicio = fecha.atStartOfDay();
+            fin = fecha.atTime(LocalTime.MAX);
+        }
+
+        if (doctor != null && doctor.isBlank()) doctor = null;
+        if (consultorio != null && consultorio.isBlank()) consultorio = null;
+
+        return repository.buscarPorFiltros(inicio, fin, doctor, consultorio);
     }
 
     /**
@@ -125,17 +133,22 @@ public class CitaService {
      * @throws IllegalArgumentException Si la cita está programada para el futuro y no se puede eliminar.
      */
     public void eliminar(Long id) {
-        //antes de cancelar una cita la consulto por id para tener su fecha
-        Optional<Cita> cita = repository.findById(id);
-        LocalDateTime ahora = LocalDateTime.now();
+        Optional<Cita> citaOpt = repository.findById(id);
 
-        //solo se elimina la cita si su fecha es anterior a la actual.
-        if (cita.get().getFecha().isAfter(ahora)) {
-            System.out.println("error");
-        } else {
-            repository.deleteById(id);
+        if (citaOpt.isEmpty()) {
+            throw new IllegalArgumentException("La cita no existe.");
         }
 
+        Cita cita = citaOpt.get();
+        LocalDateTime ahora = LocalDateTime.now();
+
+        // Solo se elimina si la fecha de la cita es futura
+        if (cita.getFecha().isAfter(ahora)) {
+            repository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("No se puede cancelar una cita que ya ha pasado.");
+        }
     }
+
 
 }

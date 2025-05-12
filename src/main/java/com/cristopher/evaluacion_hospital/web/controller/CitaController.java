@@ -50,13 +50,16 @@ public class CitaController {
     public String guardarCita(@ModelAttribute("cita") Cita cita, Model model) {
         try {
             citaService.guardar(cita);
-            return "redirect:/citas";
+            return "redirect:/citas/nueva";
         } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMensaje", e.getMessage());
+            model.addAttribute("mensajeError", e.getMessage());
             model.addAttribute("cita", cita);
+            model.addAttribute("doctores", doctorService.obtenerTodos());
+            model.addAttribute("consultorios", consultorioService.obtenerTodos());
             return "formulario_cita";
         }
     }
+
 
     @GetMapping("/buscar")
     public String buscarCitas(
@@ -65,9 +68,7 @@ public class CitaController {
             @RequestParam(required = false) String consultorio,
             Model model) {
         try {
-            LocalDateTime fechaHora = (fecha != null) ? fecha.atStartOfDay() : null;
-
-            List<Cita> citas = citaService.buscarCitas(fechaHora, doctor, consultorio);
+            List<Cita> citas = citaService.buscarCitas(fecha, doctor, consultorio);
             model.addAttribute("citas", citas);
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMensaje", e.getMessage());

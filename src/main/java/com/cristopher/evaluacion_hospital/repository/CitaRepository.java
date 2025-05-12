@@ -17,21 +17,27 @@ import java.util.List;
 public interface CitaRepository extends JpaRepository<Cita, Long> {
 
     @Query("""
-        SELECT c FROM Cita c
-        WHERE (:fecha IS NULL OR c.fecha = :fecha)
-        AND (:doctor IS NULL OR LOWER(c.doctor) LIKE LOWER(CONCAT('%', :doctor, '%')))
-        AND (:consultorio IS NULL OR LOWER(c.consultorio) LIKE LOWER(CONCAT('%', :consultorio, '%')))
-    """)
-    List<Cita> buscarPorFiltros(@Param("fecha") LocalDateTime fecha,
-                                @Param("doctor") String doctor,
-                                @Param("consultorio") String consultorio);
+    SELECT c FROM Cita c
+    WHERE (:fechaInicio IS NULL OR c.fecha >= :fechaInicio)
+    AND (:fechaFin IS NULL OR c.fecha <= :fechaFin)
+    AND (:doctor IS NULL OR LOWER(CONCAT(c.doctor.nombre, ' ', c.doctor.apellidoPaterno)) LIKE LOWER(CONCAT('%', :doctor, '%')))
+    AND (:consultorio IS NULL OR CAST(c.consultorio.numero AS string) LIKE CONCAT('%', :consultorio, '%'))
+""")
+    List<Cita> buscarPorFiltros(
+            @Param("fechaInicio") LocalDateTime fechaInicio,
+            @Param("fechaFin") LocalDateTime fechaFin,
+            @Param("doctor") String doctor,
+            @Param("consultorio") String consultorio
+    );
+
+
 
     boolean existsByConsultorioIdAndFecha(Long consultorioId, LocalDateTime fecha);
 
     boolean existsByDoctorIdAndFecha(Long doctorId, LocalDateTime fecha);
 
-    long countByDoctorIdAndFecha(Long doctorId, LocalDateTime fechaConsulta);
+    long countByDoctorIdAndFechaBetween(Long doctorId, LocalDateTime inicio, LocalDateTime fin);
 
-    List<Cita> findByPacienteAndFecha(String paciente, LocalDateTime fecha);
+    List<Cita> findByPacienteAndFechaBetween(String paciente, LocalDateTime inicio, LocalDateTime fin);
 
 }

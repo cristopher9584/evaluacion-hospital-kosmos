@@ -124,6 +124,19 @@
         .cancel-button:hover {
             background-color: #bd2130;
         }
+
+        .modify-button {
+            background-color: #ffc107;
+            border: none;
+            color: black;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modify-button:hover {
+            background-color: #e0a800;
+        }
     </style>
 </head>
 <body>
@@ -186,9 +199,12 @@
             <td th:text="${'Consultorio ' + cita.consultorio.numero}">Consultorio</td>
             <td th:text="${cita.paciente}">Paciente</td>
             <td>
-                <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post">
+                <form th:action="@{'/citas/' + ${cita.id} + '/eliminar'}" method="post" style="display:inline;">
                     <button type="submit" class="cancel-button">Cancelar</button>
                 </form>
+                <a th:href="@{/citas/nueva}" style="margin-left: 8px;">
+                    <button type="button" class="modify-button">Modificar</button>
+                </a>
             </td>
         </tr>
         </tbody>
