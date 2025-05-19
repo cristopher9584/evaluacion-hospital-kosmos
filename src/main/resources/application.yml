@@ -1,16 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:oracle:thin:@//localhost:1521/xe
-    username: SYSTEM
-    password: cris
-    driver-class-name: oracle.jdbc.OracleDriver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.OracleDialect
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
+  profiles:
+    active: h2  # Cambia a 'h2' para pruebas
 
 server:
   port: 8080
