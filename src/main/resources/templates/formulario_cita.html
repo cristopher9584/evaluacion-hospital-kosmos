@@ -130,7 +130,10 @@
 
         <div class="form-group">
             <label for="fecha">Horario de consulta:</label>
-            <input type="datetime-local" id="fecha" th:field="*{fecha}" required />
+            <input type="datetime-local" id="fecha"
+                   th:value="${fechaFormateada}"
+                   name="fecha" required />
+
         </div>
 
         <div class="form-group">
